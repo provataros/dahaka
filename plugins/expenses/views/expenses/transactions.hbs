@@ -1,0 +1,77 @@
+<style>
+    .header{
+        font-size : 28px;
+        margin : 1px;
+        border : none;
+    }
+    .header-small{
+        font-size : 22px;
+        margin : 1px;
+        border : none;
+    }
+    input.header{
+        border-bottom : 1px solid black;
+    }
+    .transaction{
+        display : flex;
+        flex-direction: row;
+        align-items: stretch
+    }
+    .transaction > div{
+        flex-basis : 20%;
+        padding : 5px 15px;
+        flex-grow : 5;
+    }
+    .transaction > div:hover{
+        background-color : aliceblue;
+        cursor : pointer;
+    }
+
+</style>
+
+<script language="javascript">
+    function toggle(source) {
+        var checkboxes = document.getElementsByName('selected');
+        for (var i in checkboxes)checkboxes[i].checked = source.checked;
+    }
+</script>
+
+<div style="width:100%;padding : 15px;">
+    <form method="POST" action="/expenses/submit_adjustment">
+        <span class="header">Amount : </span><input style="text-align: right" size="2" class="header" name="amount" type="text"><span class="header-small">&nbsp;<i class="fa fa-eur"></i></span>
+        <br>
+        <span class="header">Category : </span><input class="header" name="category" type="text">
+        <br>
+        <span class="header">Details : </span><input class="header" name="detail" type="text"/>
+        <br>
+        <span class="header">Date : </span><input size = "7" class="header" name="date" type="text"/>
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+
+<br>
+<br>
+
+<div>
+    <div class="transaction">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div onclick = "document.transactions.submit()" style="text-align : center;flex-basis : 5px"><i class="fa fa-trash"></i></div>
+        <div style="text-align : center;flex-basis : 5px"><input onchange="toggle(this);" type="checkbox"></div>
+    </div>
+    <form name="transactions" method="POST" action="/expenses/delete_transactions">
+        {{#each docs}}
+            <div class="transaction">
+                <div>{{date}}</div>
+                <div>{{amount}} &euro;</div>
+                <div>{{category}}</div>
+                <div>{{detail}}</div>
+                <div style="text-align : center;flex-basis : 5px"><input name="selected" type="checkbox" value="{{_id}}"></div>
+            </div>
+        {{/each}}
+    </form>
+</div>
+
+</div>

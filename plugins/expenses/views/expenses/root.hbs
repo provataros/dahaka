@@ -1,0 +1,45 @@
+<style>
+    .bar{
+        flex-basis: 20px;
+        background-color : #e68b98;
+    }
+    .chart{
+        width : 100%;
+        height : 500px;
+        table-layout: fixed;
+        padding-top : 30px;
+        text-align: center;
+    }
+    .labels{
+        width : 100%;
+        table-layout: fixed;
+    }
+    .rotate {
+        text-align: center;
+    }
+    .labels .bar{
+        padding-top : 5px;
+        padding-bottom : 10px;
+        vertical-align: top;
+        background-color : transparent;
+    }
+
+</style>
+
+<div style="width : 100%">
+    <div>Previous Month This Month</div>
+    <table class="chart">
+        <tr>
+            {{#each data}}
+                <td style="vertical-align : bottom">{{#if total}}{{total}}{{/if}}<div style="height : {{percentage total ../max}}%" class="bar"></div></td>
+            {{/each}}
+        </td>
+    </table>
+    <table class="labels">
+        <tr>
+            {{#each data}}
+                <td style="vertical-align : top"><div class="bar"><div class="rotate">{{date}}</div></td>
+            {{/each}}
+        </td>
+    </table>
+</div>

@@ -1,6 +1,5 @@
 var core = require("./core");
-var income = require("./income");
-var expenses = require("./expenses");
+var transactions = require("./transactions");
 var settings = require("./settings");
 
 
@@ -26,8 +25,7 @@ module.exports.setup = function(app){
 
     app.get("views").push(__dirname+"/views");
     core.setup(app);
-    income.setup(app);
-    expenses.setup(app);
+    transactions.setup(app);
     settings.setup(app);
 }
 

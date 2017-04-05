@@ -6,7 +6,6 @@ module.exports.setup = function(app,mongo){
     app.get("/expenses/settings",function(req,res,next){
 
         app.get("expenses_db").collection("misc").findOne({id:"settings"},function(err,doc){
-            console.log(err,doc);
             doc = doc || {};
             app.set("breadcrumb",[{label : "Expenses",url:"/expenses"},{label : "Settings",url:"/expenses/settings"}]);
             app.locals.breadcrumb = app.get("breadcrumb");
