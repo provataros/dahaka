@@ -1,0 +1,146 @@
+<html>
+    
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/font-awesome.css">
+    <style>
+        html,body{
+            padding : 0px;
+            margin : 0px;
+            box-sizing: border-box;
+        }
+        #banner{
+            background-color  :white;
+            border-bottom : 0.5px solid #dedede;
+            box-sizing: border-box;
+            width : 100%;
+            height : 35px;
+        }
+        #menu{
+            top : 0px;
+            left : 0px;
+            width : 55px;
+            height : 100%;
+            background-color  :#2d343c;
+            border-bottom : 0.5px solid #dedede;
+            box-sizing: border-box;
+        }
+        #container{
+            display : flex;
+        }
+        #context{
+            flex-grow: 1;
+            display : flex;
+            flex-direction: column;
+        }
+        #content{
+            flex-grow : 1;
+            display : flex;
+        }
+        .menu-item{
+            color : white;
+            padding : 10 10px 10px 5px;
+            cursor : pointer;
+        }
+        .menu-item:hover,.app-name:hover{
+            background-color : #697f68;
+        }
+        .app-name > a {
+            color : inherit !important;
+            text-decoration: none;
+            width : 100%;
+            height : 100%;
+            display : block;
+        }
+        .app-name .hide-menu:hover{
+            background-color : lightgray;
+        }
+        .app-name .hide-menu{
+            display : inline-flex;
+            align-items : center;
+            justify-content : center;
+            width : 68px;
+        }
+        .app-name{
+            cursor : pointer;
+            color : white;
+            font-size : 24px;
+            padding-left : 10px;
+            line-height: 50px;
+            height : 50px;
+            display : flex;
+        }
+        .menu-icon{
+            width : 30px;
+            height : 30px;
+            display : inline-flex;
+            font-size : 20px;
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            
+        }
+        .menu-label{
+            display : inline-flex;
+            justify-content: flex-start;
+            align-items: center;
+            height : 30px;
+        }
+        .menu-item > a{
+            display : flex;
+            text-decoration: none;
+            color : inherit !important;
+        }
+        #path-trace{
+            padding-left : 20px;
+        }
+        #path-trace > div:hover{
+            background-color : #cbdcca;
+        }
+        #path-trace > div{
+            font-size : 18px;
+            display : inline-flex;
+            align-items : center;
+            height: 100%;
+            padding : 0px 10px;
+            cursor : pointer;
+        }
+        #path-trace  a {
+            color : inherit !important;
+            text-decoration: none;
+        }
+
+
+        .iframe {
+            flex-grow : 1;
+        }
+    </style>
+</head>
+<body>
+    <div id = "container">
+        <div id = "menu">
+            <div class="app-name"><a href="/">Dahaka</a><div class="hide-menu"><i class="fa fa-chevron-left"></i></div></div>
+            {{#each menu}}
+                <div class="menu-item">
+                    <a href="{{{url}}}">
+                        <span class="menu-icon">{{{icon}}}</span>
+                    </a>
+                </div>
+            {{/each}}
+        </div>
+        <div id = "context">
+            <div id = "banner">
+                <div id="path-trace">
+                    <div><a href="/">Home</a></div> 
+                    {{#each breadcrumb}}
+                        <div><a href="{{url}}">{{label}}</a></div> 
+                    {{/each}}
+                </div>
+            </div>
+            <div id = "content">
+                {{{body}}}
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

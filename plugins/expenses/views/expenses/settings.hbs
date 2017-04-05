@@ -1,0 +1,39 @@
+<style>
+    .padded-reg{
+        padding : 10px;
+        box-sizing: border-box;
+    }
+    .padded-reg >form> div{
+        padding : 1px;
+        box-sizing: border-box;
+    }
+    .metric{
+        padding : 10px;
+        font-size : 34px;
+    }
+    .editable{
+        border : none;
+        width : auto;
+        display : inline-block;
+        text-align: right;
+    }
+    .header{
+        font-size : 34px;
+        padding : 10px;
+    }
+    .no-padding-left{
+        padding-left : 0px;
+    }
+</style>
+
+<div class="padded-reg">
+    <form action="/expenses/save_settings" method="POST">
+        <div>
+            <span class="header">Balance : </span><input name="balance" size="4" class="metric editable" type="text" value="{{config.balance}}"/>&nbsp;<i class="fa fa-eur fa-2x"></i>
+        </div>
+        <div>
+            <span class="header">Payday : </span><input name="payday" style="width : 60px" size="1" class= "metric editable" type="text" value="{{config.payday}}"/><span class="header no-padding-left">/**/****</span>
+        </div>
+        <input type="submit" value="Save">
+    </form>
+</div>
