@@ -86,7 +86,8 @@ module.exports.setup = function(app){
             next();
         }
         else{
-            res.render("auth/login",{layout : false});
+            if (req.url=="/")res.render("auth/login",{layout : false});
+            else res.redirect("/");
         }
     })
 }

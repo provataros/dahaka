@@ -30,6 +30,7 @@ module.exports.start = function(args){
   app.use('/css', express.static('resources/public/css'))
   app.use('/fonts', express.static('resources/public/fonts'))
   app.use('/js', express.static('resources/public/js'))
+  app.use("/favicon.ico",function(){});
   app.set("breadcrumb",[])
 
   app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
