@@ -4,6 +4,8 @@ cd ../dahaka-expenses
 call npm version patch --no-git
 cd ../dahaka-external
 call npm version patch --no-git
+cd ../dahaka-calendar
+call npm version patch --no-git
 cd ..
 call npm version patch --no-git
 pause
