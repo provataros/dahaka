@@ -3,6 +3,7 @@ const util = require('util');
 
 
 module.exports.setup = function(app,mongo){
+    return;
     app.get("/expenses/settings",function(req,res,next){
 
         app.get("expenses_db").collection("misc").findOne({id:"settings"},function(err,doc){

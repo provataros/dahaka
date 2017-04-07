@@ -38,10 +38,15 @@ module.exports.setup = function(app){
 
 
     passport.serializeUser(function(user, done) {
+        delete user.password;
+        delete user._id;
         done(null, user);
     });
 
     passport.deserializeUser(function(user, done) {
+        
+        delete user.password;
+        delete user._id;
         done(null,user);
     });
 

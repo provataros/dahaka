@@ -19,6 +19,13 @@ module.exports.setup = function(app){
         }
         Object.keys(date).length!=0?date={date : date}:null;
         // req.query.from?
+
+        
+        if (req.user && req.user.username){
+            date.user = req.user.username;
+        }
+        console.log(date);
+
         app.get("expenses_db").collection("transactions").find(date).sort({date : -1}).toArray().then(function(docs){
 
             for (var i in docs){
@@ -36,14 +43,16 @@ module.exports.setup = function(app){
         date = date.isValid()?date:moment();
 
         if (req.body.amount || req.body.category || req.body.detail){
-
-            app.get("expenses_db").collection("transactions").insert({
+            var params = {
                 amount : parseFloat(req.body.amount) || 0,
                 category : req.body.category || "-",
                 detail : req.body.detail || "-",
                 date : date.format("YYYYMMDDHHmmss"),
-
-            }).then(function(result){
+            };
+            if (req.user && req.user.username){
+                params.user = req.user.username;
+            }
+            app.get("expenses_db").collection("transactions").insert(params).then(function(result){
                 //console.log(result);
                 res.redirect("/expenses/transactions");
             }).catch(function(err){
@@ -64,9 +73,13 @@ module.exports.setup = function(app){
             for (var i in ids){
                 ids[i] = new mongo.ObjectID(ids[i]); 
             }
-            app.get("expenses_db").collection("transactions").remove({
+            var params = {
                 _id : {$in : ids}
-            }).then(function(result){
+            };
+            if (req.user && req.user.username){
+                params.user = req.user.username;
+            }
+            app.get("expenses_db").collection("transactions").remove(params).then(function(result){
                 //console.log(result);
                 res.redirect("/expenses/transactions");
                 //console.log("OK");

@@ -1,27 +1,24 @@
 var moment = require("moment");
-var hbs = require("hbs");
-
 
 module.exports.setup = function(app){
     app.get("views").push(__dirname+"/views");
+    
+    app.get("engine").registerHelper("percentage",function(a,b){
+        return parseFloat((100*a/b).toFixed(2));
+    });
+    app.get("engine").registerHelper("getAxisPoints",function(max,div){
+        var step = (max/div).toFixed(2);
+        var arr = [];
+        for (var i=div;i>=0;i--){
+            arr.push(parseFloat((i*step).toFixed(2)));
+        }
+        return arr;
+    });
 
     app.get("/expenses",function(req,res,next){
-
         app.set("breadcrumb",[{label : "Expenses",url:"/expenses"}]);
         app.locals.breadcrumb = app.get("breadcrumb");
         app.locals.app_menu = appmenu;
-
-        hbs.registerHelper("percentage",function(a,b){
-            return parseFloat((100*a/b).toFixed(2));
-        });
-        hbs.registerHelper("getAxisPoints",function(max,div){
-            var step = (max/div).toFixed(2);
-            var arr = [];
-            for (var i=div;i>=0;i--){
-                arr.push(parseFloat((i*step).toFixed(2)));
-            }
-            return arr;
-        });
 
         var col = app.get("expenses_db").collection("transactions");
 
@@ -63,8 +60,14 @@ module.exports.setup = function(app){
 
         var max = 0;
         var total = 0;
+
+        var match = {};
+        if (req.user && req.user.username){
+            match.user = req.user.username;
+        }
+
         col.aggregate([
-            {$match: {}}
+            {$match: match}
             , {$group:
                 {
                     _id: {$substr: ["$date", 0, substr]}, 
@@ -101,11 +104,6 @@ module.exports.setup = function(app){
                 total : total
             });
         });
-
-
-
-
-
     })
 }
 

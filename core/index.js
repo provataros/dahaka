@@ -34,10 +34,14 @@ module.exports.start = function(args){
   //hbsutils.registerPartials(global.__root + '/client/views/partials');
   //hbsutils.registerWatchedPartials(global.__root + '/client/views/partials');
 
+  var hbs = require("hbs").create();
+
+
   app.set('view engine', 'hbs');
   app.set('views',[__dirname + "/views"]);
   app.set('view options', { layout: 'core/layouts/main' });
-
+  app.engine("hbs",hbs.__express);
+  app.set("engine",hbs);
 
   app.use('/static', express.static('resources/public'))
   app.use('/css', express.static('resources/public/css'))
