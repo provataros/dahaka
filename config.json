@@ -3,5 +3,17 @@
         "dahaka-auth",
         "dahaka-expenses",
         "dahaka-external"
-    ]
+    ],
+    "options" : {
+        "dahaka-auth" : {
+            "url" : "",
+            "secret" : ""
+        },
+        "dahaka-expenses" : {
+            "url" : ""
+        },
+        "dahaka-external" : {
+            "url" : ""
+        }
+    }
 }
