@@ -23,6 +23,8 @@
             top : 0px;
             left : 0px;
             width : 200px;
+            min-width: 200px;
+            max-width: 200px;
             background-color  :#2d343c;
             border-bottom : 0.5px solid #dedede;
             box-sizing: border-box;
@@ -42,7 +44,6 @@
         }
         .menu-item{
             color : white;
-            padding : 10 10px 10px 5px;
             cursor : pointer;
         }
         .menu-item:hover,.app-name:hover{
@@ -50,7 +51,6 @@
         }
         .menu-sub-item{
             color : white;
-            padding : 10 10px 10px 25px;
             cursor : pointer;
             font-size : 14px;
             background-color : #52575d;
@@ -112,6 +112,12 @@
             text-decoration: none;
             color : inherit !important;
         }
+        .menu-item > a{
+            padding : 10 10px 10px 10px;
+        }
+        .menu-sub-item > a{
+            padding : 10 10px 10px 25px;
+        }
         #path-trace{
             padding-left : 20px;
         }
@@ -120,20 +126,34 @@
         }
         #path-trace > div{
             font-size : 18px;
-            display : inline-flex;
+            display : inline-block;
             align-items : center;
             height: 100%;
-            padding : 0px 10px;
             cursor : pointer;
         }
         #path-trace  a {
             color : inherit !important;
             text-decoration: none;
+            padding : 0px 10px;
+            height : 100%;
+            align-items: center;
+            display : flex;
         }
 
-
+        .button{
+            padding : 10px 20px;
+            border : none;
+            background-color : #cfdbe2;
+            cursor: pointer;
+        }
+        .button:hover{
+            background-color : #b7bfc3;
+        }
         .iframe {
             flex-grow : 1;
+        }
+        .no-hover{
+            background-color : inherit !important;
         }
     </style>
 </head>

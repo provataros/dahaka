@@ -12,12 +12,20 @@ module.exports.setup = function(app){
         hbs.registerHelper("percentage",function(a,b){
             return parseFloat((100*a/b).toFixed(2));
         });
+        hbs.registerHelper("getAxisPoints",function(max,div){
+            var step = (max/div).toFixed(2);
+            var arr = [];
+            for (var i=div;i>=0;i--){
+                arr.push(parseFloat((i*step).toFixed(2)));
+            }
+            return arr;
+        });
 
         var col = app.get("expenses_db").collection("transactions");
 
 
 
-        var d1 = req.query.value?moment("01"+req.query.value,"DDMMYYYY"):moment().startOf("month");
+        var d1 = req.query.value?moment(req.query.value+"01","YYYYMMDD"):moment().startOf("month");
         var d2 = moment(d1).endOf("month");
 
         var data={};
@@ -25,30 +33,41 @@ module.exports.setup = function(app){
         var step = "days";
         var format = "YYYYMMDD";
         var format2 = ("DD");
+        var format3 = "MMMM YYYY";
+        var slots = d1.daysInMonth();
         if (req.query.frame=="month"){
 
+        }
+        else if (req.query.frame=="week"){ 
+            format2 = "dddd"
+            d1 = req.query.value?moment(req.query.value+"0101","YYYYMMDD"):moment().startOf("week");
+            d2 = moment(d1).endOf("week");
         }
         else if (req.query.frame=="year"){
             substr = 6;
             step = "months";
             format = "YYYYMM"
             format2 = "MMMM"
-            d1 = req.query.value?moment("0101"+req.query.value,"DDMMYYYY"):moment().startOf("year");
+            format3 = "YYYY"
+            slots = 12;
+            d1 = req.query.value?moment(req.query.value+"0101","YYYYMMDD"):moment().startOf("year");
             d2 = moment(d1).endOf("year");
         }
 
-
         for (var m = moment(d1); m.isBefore(d2); m.add(1, step)) {
             var f = m.format(format);
-            console.log(f);
             data[f] = {date:f,total : 0}
         }
 
         var max = 0;
+        var total = 0;
         col.aggregate([
             {$match: {}}
             , {$group:
-                {_id: {$substr: ["$date", 0, substr]}, total: {$sum: '$amount'} }
+                {
+                    _id: {$substr: ["$date", 0, substr]}, 
+                    total: {$sum: '$amount'}
+                }
             }
         ]).toArray(function(err, docs) {
             console.log(docs);
@@ -56,6 +75,7 @@ module.exports.setup = function(app){
                 if (data[docs[i]._id]){
                     data[docs[i]._id].total = docs[i].total;
                     max = Math.max(max,docs[i].total);
+                    total+=docs[i].total;
                 }
 
             }
@@ -66,10 +86,18 @@ module.exports.setup = function(app){
                 return 0;
             });
             for (var i in keys){
-                data[keys[i]].date = moment(data[keys[i]].date,format).format(format2);
+                data[keys[i]].format = moment(data[keys[i]].date,format).format(format2);
                 arr.push(data[keys[i]])
             }
-            res.render("expenses/root",{data : arr,max:max});
+            res.render("expenses/root",{
+                data : arr,
+                max:max,
+                frame:(req.query.frame=="year"?true:false),
+                month:d1.format("MMMM"),
+                year:d1.format("YYYY"),
+                avg:parseFloat((total/slots).toFixed(2)),
+                total : total
+            });
         });
 
 
