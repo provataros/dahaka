@@ -1,5 +1,5 @@
 var express = require("express");
-var config = require("./secret.js");
+
 var session = require("express-session");
 var passport = require("passport");
 
@@ -13,15 +13,15 @@ module.exports.order = 0;
 
 module.exports.name = "dahaka-auth";
 
-module.exports.setup = function(app){
+module.exports.setup = function(app,options){
     
     app.get("views").push(__dirname+"/views");
     app.use(session({  
         store: new mongosession({
-            uri: config.url,
+            uri: options.url || app.get("database_url"),
             collection : "sessions"
         }),
-        secret: config.secret,
+        secret: options.secret,
         resave: true,
         saveUninitialized: true
     })); // session secret

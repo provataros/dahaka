@@ -7,21 +7,29 @@ var MongoClient = require('mongodb').MongoClient;
 
 
 
-var url = require("./secret.js").url;
-
 module.exports.order = 10;
 module.exports.name = "dahaka-expenses";
 
-module.exports.setup = function(app){
-
-    MongoClient.connect(url, function(err, _db) {
-        if (err){
-            console.log("Error while connecting to the database Expenses");
-            return;
-        }
-        console.log("Connected successfully to the database Expenses");
-        app.set("expenses_db",_db);
-    });
+module.exports.setup = function(app,options){
+    if (options && options.url){
+        MongoClient.connect(options.url, function(err, _db) {
+            if (err){
+                console.log("Error while connecting to the database Expenses");
+                return;
+            }
+            console.log("Connected successfully to the database Expenses");
+            app.set("expenses_db",function(){
+                return _db;
+            });
+        });
+    }
+    else{
+        console.log("Using main database for Expenses");
+        console.log(app.get("database"));
+        app.set("expenses_db",function(){
+            return app.get("database");
+        });
+    }
 
 
     app.get("views").push(__dirname+"/views");

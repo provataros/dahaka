@@ -26,7 +26,7 @@ module.exports.setup = function(app){
         }
         console.log(date);
 
-        app.get("expenses_db").collection("transactions").find(date).sort({date : -1}).toArray().then(function(docs){
+        app.get("expenses_db")().collection("transactions").find(date).sort({date : -1}).toArray().then(function(docs){
 
             for (var i in docs){
                 docs[i].date = moment(docs[i].date,"YYYYMMDDHHmmss").format("D MMMM YYYY");
@@ -52,7 +52,7 @@ module.exports.setup = function(app){
             if (req.user && req.user.username){
                 params.user = req.user.username;
             }
-            app.get("expenses_db").collection("transactions").insert(params).then(function(result){
+            app.get("expenses_db")().collection("transactions").insert(params).then(function(result){
                 //console.log(result);
                 res.redirect("/expenses/transactions");
             }).catch(function(err){
@@ -79,7 +79,7 @@ module.exports.setup = function(app){
             if (req.user && req.user.username){
                 params.user = req.user.username;
             }
-            app.get("expenses_db").collection("transactions").remove(params).then(function(result){
+            app.get("expenses_db")().collection("transactions").remove(params).then(function(result){
                 //console.log(result);
                 res.redirect("/expenses/transactions");
                 //console.log("OK");

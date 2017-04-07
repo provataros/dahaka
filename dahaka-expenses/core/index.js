@@ -20,7 +20,7 @@ module.exports.setup = function(app){
         app.locals.breadcrumb = app.get("breadcrumb");
         app.locals.app_menu = appmenu;
 
-        var col = app.get("expenses_db").collection("transactions");
+        var col = app.get("expenses_db")().collection("transactions");
 
 
 

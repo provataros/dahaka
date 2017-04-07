@@ -1,5 +1,9 @@
 var express = require("express");
-var bodyParser = require("body-parser")
+var bodyParser = require("body-parser");
+
+var MongoClient = require('mongodb').MongoClient;
+
+
 module.exports.order = 0;
 
 
@@ -8,7 +12,9 @@ module.exports.start = function(args){
   opts = {
     port : 3000,
     config : "config.json",
-    plugins : []
+    plugins : [],
+    options : {},
+    database_url : "",
   }
 
   args.forEach((val, index) => {
@@ -22,13 +28,26 @@ module.exports.start = function(args){
       if (Array.isArray(f.plugins)){
         opts.plugins = f.plugins;
       }
+      if (f.options && f.options.core && f.options.core.url){
+        opts.database_url = f.options.core.url;
+      }
+      opts.options = f.options || {};
     }
     catch(e){
-      console.log(e);
+      console.log(`Cannot open config file ${opts.config}`);
     }
   }
 
-  app = express();
+    app = express();
+    app.set("database_url",opts.database_url);
+    MongoClient.connect(opts.database_url, function(err, _db) {
+        if (err){
+            console.log("Error while connecting to the database Dahaka");
+            return;
+        }
+        console.log("Connected successfully to the database Dahaka");
+        app.set("database",_db);
+    })
 
 
   //hbsutils.registerPartials(global.__root + '/client/views/partials');
@@ -55,29 +74,17 @@ module.exports.start = function(args){
   })); 
 
 
-  var MongoClient = require('mongodb').MongoClient;
-
-
-  var url = require("./secret.js").url;
-  MongoClient.connect(url, function(err, _db) {
-    if (err){
-      console.log("Error while connecting to the database Dahaka");
-      return;
-    }
-    console.log("Connected successfully to the database Dahaka");
-    app.set("database",_db);
-  })
 
 
   menu = [];
   
-  opts.plugins.forEach(function(module){
-    module = require(module);
+  opts.plugins.forEach(function(mod){
+    var module = require(mod);
     if (!module || module.enabled == false){
         console.log(`module ${module.name} not active`);
         return;
     }
-    if (module && module.setup)module.setup(app);
+    if (module && module.setup)module.setup(app,opts.options[mod]);
     if (module && module.menu){
       for (var m=0; m<module.menu.length;m++){
         if (module.menu[m].enabled == false){
