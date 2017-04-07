@@ -7,6 +7,8 @@ module.exports.start = function(args){
 
   opts = {
     port : 3000,
+    config : "config.json",
+    plugins : []
   }
 
   args.forEach((val, index) => {
@@ -14,6 +16,17 @@ module.exports.start = function(args){
     opts[f[0]] = f[1]
   });
 
+  if (opts.config){
+    try{
+      var f = require("../"+opts.config);
+      if (Array.isArray(f.plugins)){
+        opts.plugins = f.plugins;
+      }
+    }
+    catch(e){
+      console.log(e);
+    }
+  }
 
   app = express();
 
@@ -53,27 +66,25 @@ module.exports.start = function(args){
 
 
   menu = [];
-
-  var plugins = require("../plugins");
-
-  for (var i in plugins){
-      if (!plugins[i].module || plugins[i].module.enabled==false){
-        console.log(`Plugin ${plugins[i].name} not active`);
-        continue;
-      }
-      if (plugins[i].module && plugins[i].module.setup)plugins[i].module.setup(app);
-      if (plugins[i].module && plugins[i].module.menu){
-        for (var m=0; m<plugins[i].module.menu.length;m++){
-          
-          if (plugins[i].module.menu[m].enabled == false){
-          }
-          else{
-            menu.push(plugins[i].module.menu[m]);
-          }
+  
+  opts.plugins.forEach(function(module){
+    module = require(module);
+    if (!module || module.enabled == false){
+        console.log(`module ${module.name} not active`);
+        return;
+    }
+    if (module && module.setup)module.setup(app);
+    if (module && module.menu){
+      for (var m=0; m<module.menu.length;m++){
+        if (module.menu[m].enabled == false){
+        }
+        else{
+          menu.push(module.menu[m]);
         }
       }
-      console.log(`Plugin ${plugins[i].name} initiated successfully`);
-  }
+    }
+    console.log(`module ${module.name} initiated successfully`);
+  })
 
   function compare(a,b) {
     if (a.order < b.order)

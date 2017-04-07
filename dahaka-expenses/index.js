@@ -10,6 +10,7 @@ var MongoClient = require('mongodb').MongoClient;
 var url = require("./secret.js").url;
 
 module.exports.order = 10;
+module.exports.name = "dahaka-expenses";
 
 module.exports.setup = function(app){
 

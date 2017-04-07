@@ -1,5 +1,7 @@
 var moment = require("moment");
 var hbs = require("hbs");
+
+
 module.exports.setup = function(app){
     app.get("views").push(__dirname+"/views");
 
@@ -70,7 +72,7 @@ module.exports.setup = function(app){
                 }
             }
         ]).toArray(function(err, docs) {
-            console.log(docs);
+            //console.log(docs);
             for (var i in docs){
                 if (data[docs[i]._id]){
                     data[docs[i]._id].total = docs[i].total;

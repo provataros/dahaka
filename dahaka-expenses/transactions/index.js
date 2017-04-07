@@ -44,7 +44,7 @@ module.exports.setup = function(app){
                 date : date.format("YYYYMMDDHHmmss"),
 
             }).then(function(result){
-                console.log(result);
+                //console.log(result);
                 res.redirect("/expenses/transactions");
             }).catch(function(err){
                 console.log(err);
@@ -59,7 +59,7 @@ module.exports.setup = function(app){
     
     app.post("/expenses/delete_transactions",function(req,res,next){
         var ids = Array.isArray(req.body.selected)?req.body.selected:[req.body.selected];
-        console.log(ids);
+        //console.log(ids);
         if (ids){
             for (var i in ids){
                 ids[i] = new mongo.ObjectID(ids[i]); 

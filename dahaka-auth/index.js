@@ -9,7 +9,9 @@ var LocalStrategy   = require('passport-local').Strategy;
 var mongosession = require("connect-mongodb-session")(session);
 
 var authenticated = true;
-module.exports.order = 001;
+module.exports.order = 0;
+
+module.exports.name = "dahaka-auth";
 
 module.exports.setup = function(app){
     
@@ -48,18 +50,18 @@ module.exports.setup = function(app){
         function(email, password, done) { // callback with email and password from our form
             // find a user whose email is the same as the forms email
             // we are checking to see if the user trying to login already exists
-            console.log(email,password);
+            //console.log(email,password);
            app.get("database").collection("users").findOne({username : email}).then(function(user) {
                 // if no user is found, return the message
                 if (!user){
-                    console.log("no such user");
+                    //console.log("no such user");
                     return done(null, false); // req.flash is the way to set flashdata using connect-flash
                 }
 
-                console.log(user);
+                //console.log(user);
                 // if the user is found but the password is wrong
                 if (user.password != password){
-                    console.log("invalid passwrod");
+                    //console.log("invalid passwrod");
                     return done(null, false); // create the loginMessage and save it to session as flashdata
                 }
                 // all is well, return successful user

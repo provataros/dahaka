@@ -17,7 +17,7 @@ module.exports.setup = function(app,mongo){
 
     app.post("/expenses/save_settings",function(req,res,next){
 
-        console.log(req.body);
+        //console.log(req.body);
 
         app.get("expenses_db").collection("misc").update({id:"settings"},{$set : {balance : req.body.balance,payday : req.body.payday}},{upsert : true}).then(function(result){
             app.set("breadcrumb",[{label : "Expenses",url:"/expenses"},{label : "Settings",url:"/expenses/settings"}]);

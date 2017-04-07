@@ -1,7 +1,5 @@
-var express = require("express");
-
 module.exports.order = 10;
-
+module.exports.name = "dahaka-external";
 
 module.exports.setup = function(app){
     app.get("views").push(__dirname+"/views");
