@@ -1,0 +1,16 @@
+{
+    "plugins" : [
+        "dahaka-auth",
+        "dahaka-expenses",
+        "dahaka-external",
+        "dahaka-calendar"
+    ],
+    "options" : {
+        "core" : {
+            "url" : ""
+        },
+        "dahaka-auth" : {
+            "secret" : ""
+        }
+    }
+}
