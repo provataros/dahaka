@@ -1,7 +1,0 @@
-{
-    "plugins" : [
-        "dahaka-auth",
-        "dahaka-expenses",
-        "dahaka-external"
-    ]
-}
