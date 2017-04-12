@@ -95,6 +95,9 @@
                             {{#if ../frame}}
                                 {{#if total}}onclick='top.location.href="/expenses?frame=month&value={{date}}"'{{/if}} 
                             {{/if}}
+                            {{#if ../frameday}}
+                                {{#if total}}onclick='top.location.href="/expenses?frame=day&value={{date}}"'{{/if}} 
+                            {{/if}}
                         style="vertical-align : bottom">{{#if total}}{{total}}{{/if}}<div style="height : {{percentage total ../max}}%" class="bar"></div></td>
                     {{/each}}
                 </tr>

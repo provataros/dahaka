@@ -37,24 +37,27 @@ module.exports.start = function(args){
       console.log(`Cannot open config file ${opts.config}`);
     }
   }
-
-    app = express();
-    app.set("database_url",opts.database_url);
-    MongoClient.connect(opts.database_url, function(err, _db) {
-        if (err){
-            console.log("Error while connecting to the database Dahaka");
-            return;
-        }
-        console.log("Connected successfully to the database Dahaka");
-        app.set("database",_db);
-    })
+  app = express();
+  app.set("database_url",opts.database_url);
+  MongoClient.connect(opts.database_url, function(err, _db) {
+      if (err){
+          console.log("Error while connecting to the database Dahaka");
+          return;
+      }
+      console.log("Connected successfully to the database Dahaka");
+      app.set("database",_db);
+  })
 
 
   //hbsutils.registerPartials(global.__root + '/client/views/partials');
   //hbsutils.registerWatchedPartials(global.__root + '/client/views/partials');
 
   var hbs = require("hbs").create();
-
+  hbs.registerHelper("debug",function(arg){
+    console.log("---------");
+    console.log(arg);
+    console.log("---------");
+  })
 
   app.set('view engine', 'hbs');
   app.set('views',[__dirname + "/views"]);
@@ -68,6 +71,14 @@ module.exports.start = function(args){
   app.use('/js', express.static('resources/public/js'))
   app.use("/favicon.ico",function(){});
   app.set("breadcrumb",[])
+
+
+  app.use(function(a,b,next){
+      app.set("breadcrumb",[]);
+      app.locals.app_menu = null;
+      app.locals.breadcrumb = app.get("breadcrumb");
+      next();
+  })
 
   app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
@@ -87,6 +98,7 @@ module.exports.start = function(args){
     if (module && module.setup)module.setup(app,opts.options[mod]);
     if (module && module.menu){
       for (var m=0; m<module.menu.length;m++){
+        console.log
         if (module.menu[m].enabled == false){
         }
         else{
@@ -112,16 +124,10 @@ module.exports.start = function(args){
 
 
   app.get("/",function(req,res){
-      app.set("breadcrumb",[]);
-      app.locals.app_menu = null;
-      app.locals.breadcrumb = app.get("breadcrumb");
       res.render("core/root",{url : req.url});
   })
 
   app.get("/*",function(req,res){
-      app.set("breadcrumb",[]);
-      app.locals.app_menu = null;
-      app.locals.breadcrumb = app.get("breadcrumb");
       res.render("core/404",{url : req.url});
   })
 

@@ -24,7 +24,6 @@ module.exports.setup = function(app){
         if (req.user && req.user.username){
             date.user = req.user.username;
         }
-        console.log(date);
 
         app.get("expenses_db")().collection("transactions").find(date).sort({date : -1}).toArray().then(function(docs){
 
@@ -95,3 +94,24 @@ module.exports.setup = function(app){
         
     })
 }
+
+
+var appmenu = [{
+    label : "Transactions",
+    url : "/expenses/transactions",
+    icon : "<i class='fa fa-plus'></i>",
+    style : "color : red",
+    order : 1
+}
+,
+/*{
+    label : "Settings",
+    url : "/expenses/settings",
+    icon : "<i class='fa fa-cogs'></i>",
+    style : "color : red",
+    order : 1,
+    enabled : false;
+}*/
+]
+
+module.exports.app_menu = appmenu;

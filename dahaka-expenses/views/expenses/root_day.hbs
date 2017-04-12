@@ -1,0 +1,86 @@
+<style>
+    .theader{
+        font-size : 1.8em;
+        font-weight: bold;
+        width : 100%;
+        text-align: center;
+    }
+
+    .header{
+        font-size : 1.7em;
+        margin : 1px;
+        border : none;
+    }
+    .header-small{
+        font-size : 1.7em;
+        margin : 1px;
+        border : none;
+    }
+    input.header{
+        border-bottom : 1px solid black;
+    }
+    .transaction{
+        display : flex;
+        flex-direction: row;
+        align-items: stretch
+    }
+    .transaction > div{
+        flex-basis : 20%;
+        padding : 5px 15px;
+        flex-grow : 5;
+    }
+    .transaction > div:hover{
+        background-color : aliceblue;
+        cursor : pointer;
+    }
+    .metric {
+        display : inline-block;
+        padding : 25px;
+        font-size : 1.6em;
+        font-weight: bold;
+        text-align: center;
+        background-color :#fbfdff;
+        box-shadow: 0px 0px 5px gray;
+    }
+    #statistics{
+        display : flex;
+        flex-direction: row;
+        justify-content: space-around;
+        margin : 25px;
+    }
+</style>
+
+<div style="width : 100%;padding : 30px;">
+    
+    <div class="theader">{{#unless dayframe}}{{day}}{{/unless}}&nbsp;{{#unless frame}}<a href="/expenses?frame=month&value={{year}}{{month}}">{{month}}</a>{{/unless}}&nbsp;<a href="/expenses?frame=year&value={{year}}">{{year}}</a></div>
+    <div id ="statistics">
+        <div class="metric">
+            Total
+            <br>
+            {{total}}
+        </div>
+    </div>
+    
+    <div>
+        <div class="transaction">
+            <div class="no-hover"></div>
+            <div class="no-hover"></div>
+            <div class="no-hover"></div>
+            <div class="no-hover"></div>
+            <div onclick = "document.transactions.submit()" style="text-align : center;flex-basis : 5px"><i class="fa fa-trash"></i></div>
+            <div style="text-align : center;flex-basis : 5px"><input onchange="toggle(this);" type="checkbox"></div>
+        </div>
+        <form name="transactions" method="POST" action="/expenses/delete_transactions">
+            {{#each docs}}
+                <div class="transaction">
+                    <div>{{date}}</div>
+                    <div>{{amount}} &euro;</div>
+                    <div>{{category}}</div>
+                    <div>{{detail}}</div>
+                    <div style="text-align : center;flex-basis : 5px"><input name="selected" type="checkbox" value="{{_id}}"></div>
+                </div>
+            {{/each}}
+        </form>
+    </div>
+
+</div>

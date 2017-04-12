@@ -18,13 +18,11 @@ module.exports.setup = function(app){
     app.get("/expenses",function(req,res,next){
         app.set("breadcrumb",[{label : "Expenses",url:"/expenses"}]);
         app.locals.breadcrumb = app.get("breadcrumb");
-        app.locals.app_menu = appmenu;
 
         var col = app.get("expenses_db")().collection("transactions");
 
 
-
-        var d1 = req.query.value?moment(req.query.value+"01","YYYYMMDD"):moment().startOf("month");
+        var d1 = req.query.value?moment(req.query.value+"01",["YYYYMMDD","YYYYMMMMDD"]):moment().startOf("month");
         var d2 = moment(d1).endOf("month");
 
         var data={};
@@ -66,63 +64,77 @@ module.exports.setup = function(app){
             match.user = req.user.username;
         }
 
-        col.aggregate([
-            {$match: match}
-            , {$group:
-                {
-                    _id: {$substr: ["$date", 0, substr]}, 
-                    total: {$sum: '$amount'}
+        if (req.query.frame != "day"){
+            col.aggregate([
+                {$match: match}
+                , {$group:
+                    {
+                        _id: {$substr: ["$date", 0, substr]}, 
+                        total: {$sum: '$amount'}
+                    }
                 }
-            }
-        ]).toArray(function(err, docs) {
-            //console.log(docs);
-            for (var i in docs){
-                if (data[docs[i]._id]){
-                    data[docs[i]._id].total = docs[i].total;
-                    max = Math.max(max,docs[i].total);
-                    total+=docs[i].total;
-                }
+            ]).toArray(function(err, docs) {
+                //console.log(docs);
+                for (var i in docs){
+                    if (data[docs[i]._id]){
+                        data[docs[i]._id].total = docs[i].total;
+                        max = Math.max(max,docs[i].total);
+                        total+=docs[i].total;
+                    }
 
-            }
-            var arr = [];
-            var keys = Object.keys(data).sort(function(a,b){
-                if (data[a].date<data[b].date)return -1;
-                if (data[a].date>data[b].date)return 1;
-                return 0;
+                }
+                var arr = [];
+                var keys = Object.keys(data).sort(function(a,b){
+                    if (data[a].date<data[b].date)return -1;
+                    if (data[a].date>data[b].date)return 1;
+                    return 0;
+                });
+                for (var i in keys){
+                    data[keys[i]].format = moment(data[keys[i]].date,format).format(format2);
+                    arr.push(data[keys[i]])
+                }
+                res.render("expenses/root",{
+                    data : arr,
+                    max:max,
+                    frame:(req.query.frame=="year"?true:false),
+                    frameday:(req.query.frame=="month"||!req.query.frame?true:false),
+                    month:d1.format("MMMM"),
+                    year:d1.format("YYYY"),
+                    avg:parseFloat((total/slots).toFixed(2)),
+                    total : total
+                });
             });
-            for (var i in keys){
-                data[keys[i]].format = moment(data[keys[i]].date,format).format(format2);
-                arr.push(data[keys[i]])
+        }
+        else{
+            var match = {};
+            if (req.user && req.user.username){
+                match.user = req.user.username;
             }
-            res.render("expenses/root",{
-                data : arr,
-                max:max,
-                frame:(req.query.frame=="year"?true:false),
-                month:d1.format("MMMM"),
-                year:d1.format("YYYY"),
-                avg:parseFloat((total/slots).toFixed(2)),
-                total : total
-            });
-        });
+            match.date = {$gte : moment(req.query.value,"YYYYMMDD").startOf("day").format("YYYYMMDDHHmmss"),$lte : moment(req.query.value,"YYYYMMDD").endOf("day").format("YYYYMMDDHHmmss")}
+
+            console.log(req.query.value);
+
+            app.get("expenses_db")().collection("transactions").find(
+                match
+            ).sort({date : -1}).toArray().then(function(docs){
+                var total = 0;
+                for (var i in docs){
+                    docs[i].date = moment(docs[i].date,["YYYYMMDDHHmmss","YYYYMMDD"]).format("D MMMM YYYY");
+                    total += docs[i].amount;
+                }
+                var stuff = {
+                    frameday : true,
+                    month:moment(req.query.value,"YYYYMMDD").format("MMMM"),
+                    year:moment(req.query.value,"YYYYMMDD").format("YYYY"),
+                    day:moment(req.query.value,"YYYYMMDD").format("dddd DD"),
+                    docs : docs,
+                    total : total
+                };
+                res.render("expenses/root_day",stuff);
+            }).catch(function(err){
+                console.log(err);
+            })
+        }
+
     })
 }
-
-var appmenu = [{
-    label : "Transactions",
-    url : "/expenses/transactions",
-    icon : "<i class='fa fa-plus'></i>",
-    style : "color : red",
-    order : 1
-}
-,
-/*{
-    label : "Settings",
-    url : "/expenses/settings",
-    icon : "<i class='fa fa-cogs'></i>",
-    style : "color : red",
-    order : 1,
-    enabled : false;
-}*/
-]
-
-module.exports._appmenu = appmenu;

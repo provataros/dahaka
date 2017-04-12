@@ -37,11 +37,12 @@ module.exports.setup = function(app,options){
     transactions.setup(app);
     settings.setup(app);
 }
-
+console.log(core);
 module.exports.menu = [{
     label : "Expenses",
     url : "/expenses",
     icon : "<i class='fa fa-eur'></i>",
     style : "color : red",
-    order : 1
+    order : 1,
+    appmenu : transactions.app_menu,
 }]
